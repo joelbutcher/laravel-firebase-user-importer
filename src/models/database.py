@@ -1,33 +1,23 @@
 import time
-from typing import Optional
 import pymysql
-from pymysql.cursors import Cursor
+from pydantic import BaseModel
+from pymysql.cursors import DictCursor
 from src.models.errors import DbConnectionError
 
 
-class Database:
-    def __init__(
-            self,
-            host: str,
-            port: int,
-            database: str,
-            username: str,
-            password: str,
-            charset: str = "utf8mb4",
-            cursor=pymysql.cursors.DictCursor,
-    ):
-        self.host = host
-        self.port = port
-        self.database = database
-        self.username = username
-        self.password = password
-        self.charset = charset
-        self.cursor = cursor
+class Database(BaseModel):
+    host: str
+    port: int
+    database: str
+    username: str
+    password: str
+    charset: str = "utf8mb4"
+    cursor = DictCursor
 
     def new_connection(
-            self,
-            max_attempts: int = 5,
-            wait_time_seconds: Optional[int] = None,
+        self,
+        max_attempts: int = 5,
+        wait_time_seconds: int | None = None,
     ) -> pymysql.connect:
         """Returns a connection object to a database.
 

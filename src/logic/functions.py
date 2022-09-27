@@ -9,14 +9,14 @@ per_page: int = 100
 
 
 def calculate_offset(
-        page: int = 1,
+    page: int = 1,
 ) -> int:
     return (page - 1) * per_page
 
 
 def fetch_page(
-        connection: pymysql.connect,
-        page: int = 1,
+    connection: pymysql.connect,
+    page: int = 1,
 ) -> tuple:
     offset = calculate_offset(
         page=page,
@@ -32,7 +32,7 @@ def fetch_page(
 
 def user_exists_for_email(email: str) -> bool:
     """Does a lookup for the given email address to determine if there is
-        already a record for in firestore.
+    already a record for in firestore.
     """
 
     try:
@@ -50,7 +50,7 @@ def user_exists_for_email(email: str) -> bool:
 
 
 def import_page(
-        users: tuple,
+    users: tuple,
 ):
     import_batch = []
     for user in users:
@@ -62,20 +62,19 @@ def import_page(
 
         # Only import the users if one doesn't already exist for that email
         if not user_exists_for_email(
-                email=email,
+            email=email,
         ):
             import_batch.append(
                 auth.ImportUserRecord(
-                    uid=uid,
-                    display_name=name,
-                    email=email,
-                    password_hash=password_hash
+                    uid=uid, display_name=name, email=email, password_hash=password_hash
                 )
             )
 
-    print("Importing {0} users".format(
-        len(import_batch),
-    ))
+    print(
+        "Importing {0} users".format(
+            len(import_batch),
+        )
+    )
 
     if len(import_batch) > 0:
         try:
@@ -84,21 +83,27 @@ def import_page(
                 hash_alg=get_hash_alg(),
             )
 
-            print("Successfully imported {0} users. Failed to import {1} users.".format(
-                result.success_count, result.failure_count,
-            ))
+            print(
+                "Successfully imported {0} users. Failed to import {1} users.".format(
+                    result.success_count,
+                    result.failure_count,
+                )
+            )
             for err in result.errors:
-                print("Failed to import {0} due to {1}".format(
-                    users[err.index].uid, err.reason,
-                ))
+                print(
+                    "Failed to import {0} due to {1}".format(
+                        users[err.index].uid,
+                        err.reason,
+                    )
+                )
         except exceptions.FirebaseError:
             # Some unrecoverable error occurred that prevented the operation from running.
             pass
 
 
 def import_users(
-        connection: pymysql.connect,
-        page: int = 1,
+    connection: pymysql.connect,
+    page: int = 1,
 ) -> None:
     current_page = fetch_page(
         connection=connection,
