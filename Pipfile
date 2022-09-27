@@ -6,6 +6,9 @@ name = "pypi"
 [packages]
 pymysql = "*"
 firebase-admin = "*"
+black = "*"
+pydantic = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.9"
