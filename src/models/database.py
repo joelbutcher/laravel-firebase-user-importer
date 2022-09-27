@@ -1,7 +1,6 @@
 import time
-from typing import Optional
 import pymysql
-from pymysql.cursors import Cursor
+from pymysql.cursors import DictCursor
 from src.models.errors import DbConnectionError
 
 
@@ -14,7 +13,7 @@ class Database:
         username: str,
         password: str,
         charset: str = "utf8mb4",
-        cursor=pymysql.cursors.DictCursor,
+        cursor=DictCursor,
     ):
         self.host = host
         self.port = port
@@ -27,7 +26,7 @@ class Database:
     def new_connection(
         self,
         max_attempts: int = 5,
-        wait_time_seconds: Optional[int] = None,
+        wait_time_seconds: int | None = None,
     ) -> pymysql.connect:
         """Returns a connection object to a database.
 
