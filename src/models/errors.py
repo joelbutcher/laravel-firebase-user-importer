@@ -1,4 +1,7 @@
-class DbConnectionError(Exception):
+from pydantic import BaseModel
+
+
+class DbConnectionError(BaseModel, Exception):
     def __init__(self, exc: Exception, max_retries: int):
         self.args = exc.args
         self.error_type = type(exc)
